@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 
+	"assigment_7/helper"
 	"assigment_7/order"
 
 	"github.com/gin-gonic/gin"
@@ -23,9 +24,11 @@ func (h *orderHandler) CreateOrder(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	response, err := h.orderSvc.CreateOrder(input)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response)
+	response := h.orderSvc.CreateOrder(input)
+	helper.WriteJsonRespnse(ctx, response)
+}
+
+func (h *orderHandler) GetOrders(ctx *gin.Context) {
+	response := h.orderSvc.GetOrders()
+	helper.WriteJsonRespnse(ctx, response)
 }

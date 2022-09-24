@@ -3,16 +3,20 @@ package order
 import "time"
 
 type Order struct {
-	OrderID      int
-	CustomerName string
-	OrderedAt    time.Time
-	Items        []Item
+	OrderID      int       `json:"orderId"`
+	CustomerName string    `json:"customerName"`
+	OrderedAt    time.Time `json:"orderedAt"`
 }
 
 type Item struct {
-	ItemId      int
-	ItemCode    string
-	Description string
-	Quantity    int
-	OrderID     int
+	ItemId      int    `json:"itemId,omitempty"`
+	ItemCode    string `json:"itemCode"`
+	Description string `json:"description"`
+	Quantity    int    `json:"quantity"`
+	OrderID     int    `json:"orderId"`
+}
+
+type Orders struct {
+	Order Order
+	Items Item
 }

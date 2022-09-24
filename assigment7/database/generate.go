@@ -8,21 +8,20 @@ import (
 
 type Orders struct {
 	gorm.Model
-	OrderID      int       `json:"orderId" gorm:"primary_key"`
-	CustomerName string    `json:"customerName"`
-	OrderedAt    time.Time `json:"orderedAt"`
-	Items        []Items   `json:"items" gorm:"foreignkey:OrderID"`
+	OrderID      int
+	CustomerName string
+	OrderedAt    time.Time
 }
 
 type Items struct {
 	gorm.Model
-	ItemId      int    `json:"itemId" gorm:"primary_key"`
-	ItemCode    string `json:"itemCode"`
-	Description string `json:"description"`
-	Quantity    uint   `json:"quantity"`
-	OrderID     uint   `json:"-"`
+	ItemId      int
+	ItemCode    string
+	Description string
+	Quantity    int
+	OrderID     int
 }
 
-func Migratel(db *gorm.DB) {
+func Migrate(db *gorm.DB) {
 	db.AutoMigrate(&Orders{}, &Items{})
 }

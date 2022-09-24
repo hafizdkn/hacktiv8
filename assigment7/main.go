@@ -1,6 +1,7 @@
 package main
 
 import (
+	"assigment_7/database"
 	"assigment_7/handler"
 	"assigment_7/order"
 
@@ -14,6 +15,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	database.Migrate(db)
 
 	orderRepo := order.NewOrderRepository(db)
 	orderSvc := order.NewOrderService(orderRepo)
