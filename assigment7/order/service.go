@@ -2,7 +2,6 @@ package order
 
 import (
 	"fmt"
-	"time"
 )
 
 type Service interface {
@@ -28,11 +27,16 @@ func (s *service) CreateOrder(input CreateOderInput) (Order, error) {
 
 func parserInputToModel(input CreateOderInput) *Order {
 	var order Order
-	for _, item := range input.Items {
-		order.CustomerName = item["customerName"].(string)
-		order.Items = item["items"].([]Item)
-		order.OrderedAt = item["orderedAt"].(time.Time)
+	fmt.Printf("%+v\n", input)
 
+	order.CustomerName = input.CustomerName
+	order.OrderedAt = input.OrderedAt
+	for _, item := range input.Items {
+		order.Items = []Item{{
+			Description: item["description"].(string),
+			ItemCode:    item["itemCode"].(string),
+			Quantity:    int(item["quantity"].(float64)),
+		}}
 	}
 	fmt.Printf("%+v\n", order)
 	return &order

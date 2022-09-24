@@ -19,6 +19,7 @@ func NewOrderHandler(orderSvc order.Service) *orderHandler {
 func (h *orderHandler) CreateOrder(ctx *gin.Context) {
 	var input order.CreateOderInput
 	err := ctx.ShouldBindJSON(&input)
+	fmt.Println(input)
 	if err != nil {
 		panic(err)
 	}

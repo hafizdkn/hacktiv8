@@ -21,5 +21,5 @@ func main() {
 
 	router := gin.Default()
 	app := handler.NewRouter(router, orderHandler)
-	app.Start("8080")
+	app.Start(":8080")
 }
