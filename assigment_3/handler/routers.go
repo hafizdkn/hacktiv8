@@ -12,8 +12,8 @@ func NewRouter(router *gin.Engine, weatherHandler *WeatherHandler) *routers {
 }
 
 func (r *routers) Start(port string) {
-	r.router.GET("/location", r.weather.GetLocation)
 	r.router.LoadHTMLGlob("templates/*.html")
+	r.router.GET("/location", r.weather.GetLocation)
 
 	r.router.Run(port)
 }
