@@ -1,0 +1,62 @@
+{
+ "location": {
+  "city": "Surabaya",
+  "latitude": "-7.24840",
+  "longitude": "112.74190"
+ },
+ "weather": {
+  "base": "stations",
+  "clouds": {
+   "all": 20
+  },
+  "cod": 200,
+  "coord": {
+   "lat": -7.2492,
+   "lon": 112.7508
+  },
+  "dt": 1665123478,
+  "id": 1625822,
+  "main": {
+   "feels_like": 37.62,
+   "humidity": 62,
+   "pressure": 1007,
+   "temp": 31,
+   "temp_max": 31.97,
+   "temp_min": 31.97
+  },
+  "name": "Surabaya",
+  "rain": {
+   "1h": 0.24
+  },
+  "sys": {
+   "country": "ID",
+   "id": 9363,
+   "sunrise": 1665094244,
+   "sunset": 1665138176,
+   "type": 1
+  },
+  "timezone": 25200,
+  "visibility": 10000,
+  "weather": [
+   {
+    "description": "light rain",
+    "icon": "10d",
+    "id": 500,
+    "main": "Rain"
+   }
+  ],
+  "wind": {
+   "deg": 90,
+   "speed": 3.6
+  }
+ },
+ "condition": {
+  "water": 42,
+  "wind": 38
+ },
+ "status": {
+  "status_water": "Siaga",
+  "status_wind": "Siaga"
+ },
+ "time": 0
+}
