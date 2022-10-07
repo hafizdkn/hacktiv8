@@ -56,7 +56,6 @@ func generateDataWeahter(location Location) *helper.Response {
 	weahterResponse := WeatherResponse{
 		Location: location, Weather: dataWeather, Condition: conditon, Status: statusCondition, Time: nextRefreshWeather,
 	}
-	fmt.Printf("%+v\n", weahterResponse)
 	response := FormatWeatherResponse(weahterResponse)
 
 	// save record weather to json
@@ -104,17 +103,16 @@ func createStatusCondition(condition Condition) Status {
 	if condition.Water > 8 {
 		statusWater = "Bahaya"
 	}
-	if condition.Water > 6 {
+	if condition.Water > 6 && statusWater == "aman" {
 		statusWater = "Siaga"
 	}
 
 	if condition.Wind > 15 {
 		statusWind = "Bahaya"
 	}
-	if condition.Wind > 7 {
+	if condition.Wind > 7 && statusWind == "aman" {
 		statusWind = "Siaga"
 	}
-
 	return Status{StatusWater: statusWater, StatusWind: statusWind}
 }
 
