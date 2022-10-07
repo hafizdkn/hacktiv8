@@ -35,10 +35,9 @@ func (s *service) GetLocation() *helper.Response {
 	if err != nil {
 		return helper.ErrorResponse(err)
 	}
-	if dataLocation.City == "" {
-		dataLocation.City = "surabaya"
+	if city := dataLocation.City; city == "" {
+		city = "blitar"
 	}
-
 	responseWeather := generateDataWeahter(dataLocation)
 	return responseWeather
 }
@@ -49,7 +48,7 @@ func generateDataWeahter(location Location) *helper.Response {
 		return helper.ErrorResponse(err)
 	}
 
-	conditon := randomValueCondition()
+	conditon := generateRandomValueCondition()
 	statusCondition := createStatusCondition(conditon)
 	nextRefreshWeather := 10 * time.Minute
 
@@ -85,7 +84,7 @@ func getWeather(city string) (Weather, error) {
 	return weather, nil
 }
 
-func randomValueCondition() Condition {
+func generateRandomValueCondition() Condition {
 	v := make([]int, 2)
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 2; i++ {
