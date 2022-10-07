@@ -102,15 +102,13 @@ func createStatusCondition(condition Condition) Status {
 
 	if condition.Water > 8 {
 		statusWater = "Bahaya"
-	}
-	if condition.Water > 6 && statusWater == "aman" {
+	} else if condition.Water > 6 {
 		statusWater = "Siaga"
 	}
 
 	if condition.Wind > 15 {
 		statusWind = "Bahaya"
-	}
-	if condition.Wind > 7 && statusWind == "aman" {
+	} else if condition.Wind > 7 {
 		statusWind = "Siaga"
 	}
 	return Status{StatusWater: statusWater, StatusWind: statusWind}
