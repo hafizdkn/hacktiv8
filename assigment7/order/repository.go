@@ -5,31 +5,44 @@ import (
 )
 
 type Repository interface {
-	Save(order Order, item Item) (Order, Item, error)
+	Save(order interface{}) (interface{}, error)
 	GetOrders() []Orders
-	// UpdateOrder(order Order) (Order, error)
+	UpdateOrder(order interface{}) (interface{}, error)
 }
 type repository struct {
-	db *gorm.DB
+	db       *gorm.DB
+	OrderId  int
+	UpdateId int
 }
 
 func NewOrderRepository(db *gorm.DB) *repository {
-	return &repository{db}
+	return &repository{db: db}
 }
 
-func (r *repository) Save(order Order, item Item) (Order, Item, error) {
-	newOrder, newItem := r.generateId(order, item)
-	err := r.db.Create(&newOrder).Error
-	if err != nil {
-		return Order{}, Item{}, err
-	}
+func (r *repository) Save(order interface{}) (interface{}, error) {
+	var err error
+	var dataOrder interface{}
 
-	err = r.db.Create(&newItem).Error
-	if err != nil {
-		return Order{}, Item{}, err
+	switch order.(type) {
+	case Order:
+		r.generateId(order)
+		o := order.(Order)
+		o.OrderID = r.OrderId
+		dataOrder = o
+		err = r.db.Create(&o).Error
+		if err != nil {
+			return nil, err
+		}
+	case Item:
+		i := order.(Item)
+		i.OrderID = r.OrderId
+		dataOrder = i
+		err = r.db.Create(&i).Error
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	return newOrder, newItem, nil
+	return dataOrder, nil
 }
 
 func (r *repository) GetOrders() []Orders {
@@ -47,17 +60,40 @@ func (r *repository) GetOrders() []Orders {
 	return orders
 }
 
-func (r *repository) generateId(order Order, item Item) (Order, Item) {
-	orders := make([]Order, 0)
-	r.db.Find(&orders)
-
-	id := 1
-	lengthData := len(orders)
-	if lengthData > 0 {
-		id = lengthData + 1
+func (r *repository) UpdateOrder(order interface{}) (interface{}, error) {
+	var dataOrder interface{}
+	switch order.(type) {
+	case Order:
+		o := order.(Order)
+		err := r.db.Debug().Model(&Order{}).Where("order_id", o.OrderID).Updates(o).Error
+		if err != nil {
+			return nil, err
+		}
+		dataOrder = o
+		r.UpdateId = o.OrderID
+	case Item:
+		i := order.(Item)
+		err := r.db.Debug().Model(&Item{}).Where("order_id", r.UpdateId).Updates(i).Error
+		if err != nil {
+			return nil, err
+		}
+		dataOrder = i
 	}
-	order.OrderID = id
-	item.OrderID = id
+	return dataOrder, nil
+}
 
-	return order, item
+func (r *repository) generateId(order interface{}) {
+	var orderId int
+	switch order.(type) {
+	case Order:
+		orders := make([]Order, 0)
+		r.db.Find(&orders)
+		id := 1
+		lengthData := len(orders)
+		if lengthData > 0 {
+			id = lengthData + 1
+		}
+		orderId = id
+	}
+	r.OrderId = orderId
 }

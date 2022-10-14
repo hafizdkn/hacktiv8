@@ -9,6 +9,7 @@ import (
 type Service interface {
 	CreateOrder(input CreateOderInput) *helper.Response
 	GetOrders() *helper.Response
+	UpdateOrder(input UpdateOrder) *helper.Response
 }
 
 type service struct {
@@ -20,13 +21,18 @@ func NewOrderService(repository *repository) *service {
 }
 
 func (s *service) CreateOrder(input CreateOderInput) *helper.Response {
-	newOrder, newItem := parseInputToModel(input)
-	o, i, err := s.repository.Save(*newOrder, *newItem)
-	order := FormatOrder(o, i)
+	order, item := parseInputToModelCreate(input)
+	newOrder, err := s.repository.Save(order)
 	if err != nil {
 		return helper.InternalServerError(err)
 	}
-	return helper.SuccessCreateResponse(order, "success create data order")
+	newItem, err := s.repository.Save(item)
+	if err != nil {
+		return helper.InternalServerError(err)
+	}
+
+	formatterOder := FormatOrder(newOrder.(Order), newItem.(Item))
+	return helper.SuccessCreateResponse(formatterOder, "success create data order")
 }
 
 func (s *service) GetOrders() *helper.Response {
@@ -36,7 +42,21 @@ func (s *service) GetOrders() *helper.Response {
 	return response
 }
 
-func parseInputToModel(input CreateOderInput) (*Order, *Item) {
+func (s *service) UpdateOrder(input UpdateOrder) *helper.Response {
+	order, item := parseInputToModelUpdate(input)
+	dataOrder, err := s.repository.UpdateOrder(order)
+	if err != nil {
+		return helper.InternalServerError(err)
+	}
+	dataItem, err := s.repository.UpdateOrder(item)
+	if err != nil {
+		return helper.InternalServerError(err)
+	}
+	formatterOder := FormatOrder(dataOrder.(Order), dataItem.(Item))
+	return helper.SuccessResponse(formatterOder, "SUCCESS UPDATE DATA ORDER")
+}
+
+func parseInputToModelCreate(input CreateOderInput) (Order, Item) {
 	var order Order
 	var items []Item
 
@@ -51,20 +71,39 @@ func parseInputToModel(input CreateOderInput) (*Order, *Item) {
 	if err != nil {
 		panic(err)
 	}
+
 	var i Item
 	for _, item := range items {
 		i.ItemCode = item.ItemCode
 		i.Description = item.Description
 		i.Quantity = item.Quantity
 	}
-	return &order, &i
-	// fmt.Printf("item %+v\n", item)
-	// for _, item := range input.Items {
-	// 	order.Items = []Item{{
-	// 		Description: item["description"].(string),
-	// 		ItemCode:    item["itemCode"].(string),
-	// 		Quantity:    int(item["quantity"].(float64)),
-	// 	}}
-	// }
-	// fmt.Printf("%+v\n", order)
+	return order, i
+}
+
+func parseInputToModelUpdate(input UpdateOrder) (Order, Item) {
+	var order Order
+	var items []Item
+
+	order.OrderID = input.OrderId
+	order.CustomerName = input.CustomerName
+	order.OrderedAt = input.OrderedAt
+
+	byteItem, err := json.Marshal(input.Items)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(byteItem, &items)
+	if err != nil {
+		panic(err)
+	}
+
+	var i Item
+	for _, item := range items {
+		i.LineItemId = item.LineItemId
+		i.ItemCode = item.ItemCode
+		i.Description = item.Description
+		i.Quantity = item.Quantity
+	}
+	return order, i
 }

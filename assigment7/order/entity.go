@@ -9,6 +9,7 @@ type Order struct {
 }
 
 type Item struct {
+	LineItemId  int    `json:"lineItemId,omitempty"`
 	ItemId      int    `json:"itemId,omitempty"`
 	ItemCode    string `json:"itemCode"`
 	Description string `json:"description"`

@@ -40,3 +40,11 @@ func InternalServerError(err error) *Response {
 		Error:   err.Error(),
 	}
 }
+
+func BadResponse(err error) *Response {
+	return &Response{
+		Status:  http.StatusBadRequest,
+		Message: "BAD REQUEST",
+		Error:   err.Error(),
+	}
+}

@@ -1,13 +1,13 @@
 package main
 
 import (
-	"assigment_7/database"
-	"assigment_7/handler"
-	"assigment_7/order"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"assigment_7/database"
+	"assigment_7/handler"
+	"assigment_7/order"
 )
 
 func main() {
@@ -23,5 +23,5 @@ func main() {
 
 	router := gin.Default()
 	app := handler.NewRouter(router, orderHandler)
-	app.Start(":8080")
+	app.Start(":8081")
 }

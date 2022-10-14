@@ -15,6 +15,7 @@ type Orders struct {
 
 type Items struct {
 	gorm.Model
+	LineItemId  int
 	ItemId      int
 	ItemCode    string
 	Description string
